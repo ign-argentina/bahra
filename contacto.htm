@@ -1,0 +1,106 @@
+<script language="javascript" src="js/contacto.js"></script>
+<p>Para contactarse con el equipo de BAHRA y acercarnos sugerencias, errores, etc. utilice el formulario siguiente:
+</p>
+<form name="form_contacto" id="form_contacto" action="contacto.phpmailer.php" method="post">
+<input type="hidden" value="0" id="enviar" name="enviar">     
+
+<table border="0" cellpadding="4" cellspacing="0" width="95%" class="tabla_user" align="center">
+	<tr><td colspan="2" class="error"><?php echo $error ?></td></tr>
+	<tr>
+		<td class="opcional">Motivo del contacto: </td>
+		<td><textarea type="text" name="motivo_usuario" id="motivo_usuario" style="width: 500px; height: 100px;"></textarea></td>
+	</tr>
+	<tr>
+		<td class="obligatorio">Nombre:</td>
+		<td><input type="text" name="nombre_usuario" id="nombre_usuario" value="" ></td>
+	</tr>
+	<tr>
+		<td class="obligatorio">Apellido:</td>
+		<td><input type="text" name="apellido_usuario" id="apellido_usuario" value="" ></td>
+	</tr>
+	<tr>
+		<td class="obligatorio">Persona/Instituci&oacute;n/Organismo</td>
+		<td>
+		<select name="institucion_usuario" id="institucion_usuario">
+				<option value="xx" selected="selected">Seleccione una opci&oacute;n</option>
+				<option value="Usuario Particular" selected="selected">Usuario Particular</option>
+				<!--option value="Establecimiento Educativo / Escuela" >Establecimiento Educativo / Escuela</option>
+				<option value="Ministerio de Educación Nacional" >Ministerio de Educaci&oacute;n Nacional</option>
+				<option value="Ministerio de Educación Provincial" >Ministerio de Educaci&oacute;n Provincial</option>
+				<option value="Otro organismo Oficial Nacional o Provincial" >Otro organismo Oficial Nacional o Provincial</option-->
+				<option value="Administración pública" >Administraci&oacute;n p&uacute;blica</option>
+				<option value="ONG" >ONG</option>
+				<option value="Privado" >Privado</option>
+				<option value="Instituto de Investigación / Universidad" >Instituto de Investigaci&oacute;n / Universidad</option>
+				<option value="Otro" >Otro</option>
+		</select>
+		</td>
+	</tr>
+	<tr>
+	<td class="opcional">Indique Cual:</td>
+	<td><input type="text" name="que_institucion_usuario" id="que_institucion_usuario" value="" ></td>
+	<tr>
+		<td class="opcional">Telefono(**): </td>
+		<td><input type="text" name="telefono_usuario" id="telefono_usuario" value="" ></td>
+	</tr>
+	<tr>
+		<td class="opcional">Celular(**): </td>
+		<td><input type="text" name="celular_usuario" id="celular_usuario" value="" ></td>
+	</tr>	<tr>
+		<td class="opcional">Jurisdicci&oacute;n: </td>	
+		<td>
+	<select name="provincia_usuario" id="provincia_usuario">
+				<option value="x" selected="selected">Seleccione un lugar</option>
+				<option value="02" >Ciudad de Buenos Aires</option>
+				<option value="06" >Buenos Aires</option>
+				<option value="10" >Catamarca</option>
+				<option value="14" >C&oacute;rdoba</option>
+				<option value="18" >Corrientes</option>
+				<option value="22" >Chaco</option>
+				<option value="26" >Chubut</option>
+				<option value="30" >Entre R&iacute;os</option>
+				<option value="34" >Formosa</option>
+				<option value="38" >Jujuy</option>
+				<option value="42" >La Pampa</option>
+				<option value="46" >La Rioja</option>
+				<option value="50" >Mendoza</option>
+				<option value="54" >Misiones</option>
+				<option value="58" >Neuqu&eacute;n</option>
+				<option value="62" >R&iacute;o Negro</option>
+				<option value="66" >Salta</option>
+				<option value="70" >San Juan</option>
+				<option value="74" >San Luis</option>
+				<option value="78" >Santa Cruz</option>
+				<option value="82" >Santa F&eacute;</option>
+				<option value="86" >Santiago del Estero</option>
+				<option value="90" >Tucum&aacute;n</option>
+				<option value="94" >Tierra del Fuego</option>
+				<option value="99" >Otro lugar en el mundo</option>
+			</select>
+
+	</tr>
+	<tr>
+		<td class="opcional">Localidad: </td>
+		<td><input type="text" name="localidad_usuario" id="localidad_usuario" value="" ></td>
+	</tr>
+	<!--tr>
+		<td class="opcional">DNI: </td>
+		<td><input type="text" name="dni_usuario" id="dni_usuario" value="" ></td>
+	</tr -->
+	<tr>
+		<td class="obligatorio">Correo Electr&oacute;nico: </td>
+		<td><input type="text" name="email_usuario" id="email_usuario" value="" ></td>
+	</tr>
+    <tr>
+      	<td class="obligatorio">Ingrese el texto de la imagen <img src="captcha.php" ></td>
+    	<td><input type="text" name="captcha" /></td>
+    </tr>
+
+</table>
+	<p class="nota" > <!--b>(*)</b> Campos obligatorios<br-->
+									<b>(**)</b> Indique al menos un tel&eacute;fono fijo o un celular donde poder contactarlo incluyendo el prefijo de su localidad.<br>
+									Los datos solicitados se encuentran resguardados por las disposiciones sobre datos personales. Sus datos NO ser&aacute;n divulgados a terceras partes y permanecer&aacute;n estrictamente confidenciales y privados.</td>
+	</p>
+	<a href='javascript:enviar()'><img style='border:none;' src="img/enviar.gif" ></a>
+
+</form>

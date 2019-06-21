@@ -1,0 +1,212 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style>
+	#north{
+		background-color:#B1C926;
+		background-image:url('izq.png'),url('der.png');
+		background-repeat:no-repeat;
+		background-position:left center, right center;
+	}
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script type="text/javascript" src="./librerias/mapas/ol_funciones/jsFiles.js"></script>
+<script type="text/javascript" src="controles.js"></script>	
+  </head>
+  <body>
+
+  <div id="north">
+    <div align="center"><img alt="Base de Asentamientos Humanos de la Rep&uacute;blica Argentina" src="banner.png"/></div>
+ </div>
+
+
+ <div id="herramientas">
+   <div id="Mapa de referencia"></div><!-- div obligatorio, se puede mover de lugar pero tiene que estar -->
+
+ </div>
+<div id="informacion">
+  <div id="Herramienta de Atajos"></div>
+  
+</div>
+
+<div id="gearthdiv" style="height: 400px; width: 600px;"></div>
+</body>
+
+<script type="text/javascript">
+
+OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
+Ext.namespace('App');
+App.grupo=[];
+App.subgrupo=[];
+App.capas=[];
+ 
+
+
+Ext.onReady(function(){
+Ext.QuickTips.init();
+App.bounds = new OpenLayers.Bounds(-8489338.5,-7692209,-4098155,-2212564);
+cargarConfigMapa();
+
+//////////////////////////////////////////////////////
+////////  TITULO DEL MAPA /////////////////////////////
+
+App.titulo="BAHRA";
+
+/////////////////////////////////////////////////////////////////////////////////
+////////////     GRUPOS  ///////////////////////////////////////////////////////
+// le agregue un nuevo parametro, para definir si la carpetita aparece expandida o no --> true=expandida
+
+var bahra = crearGrupo('Asentamientos humanos',true);
+var tipo = crearGrupo('Tipo',true);
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////  DECLARAR CAPAS ////////////////////////////////////////////
+
+
+var capa= new crearCapa({nombre:"batimetria,limitrofes,relieve,provincias,cuerpos_agua,calles,caminos,loc_indec_900913,departamentos",
+			nombre_as:"Mapa Educativo Nacional",
+			datos_consultables:[],
+			ver_consultables_as:[],			
+			grupo:'base'});  // el grupo base es uno creado por defecto
+
+
+
+
+ capa= new crearCapa({nombre:"base_1.1",
+			nombre_as:"Asentamientos humanos",
+			datos_consultables:["cod_prov","nom_prov","cod_depto","nom_depto","cod_bahra","nombre_bahra","long_gd","lat_gd",],
+			ver_consultables_as:["COD_PROV","PROVINCIA","COD_DEPTO","DEPARTAMENTO","COD_BAHRA","NOMBRE","X","Y"],			
+			estilo:null,	
+			filtro:null,
+			activo:false,
+			grupo:bahra});
+
+
+ capa= new crearCapa({nombre:"base_1.1",
+			nombre_as:"Localidad censal",
+			datos_consultables:["cod_prov","nom_prov","cod_depto","nom_depto","cod_bahra","nombre_bahra","long_gd","lat_gd",],
+			ver_consultables_as:["COD_PROV","PROVINCIA","COD_DEPTO","DEPARTAMENTO","COD_BAHRA","NOMBRE","X","Y"],			
+			estilo:"cuadrado_rojo",	
+			filtro:"tipo_bahra like 'L%'",
+			activo:false,
+			grupo:tipo});
+
+ capa= new crearCapa({nombre:"base_1.1",
+			nombre_as:"Entidad",
+			datos_consultables:["cod_prov","nom_prov","cod_depto","nom_depto","cod_bahra","nombre_bahra","long_gd","lat_gd",],
+			ver_consultables_as:["COD_PROV","PROVINCIA","COD_DEPTO","DEPARTAMENTO","COD_BAHRA","NOMBRE","X","Y"],			
+			estilo:"cuadrado_violeta",	
+			filtro:"tipo_bahra = 'E'",
+			activo:false,
+			grupo:tipo});
+
+ capa= new crearCapa({nombre:"base_1.1",
+			nombre_as:"Sitio Edificado",
+			datos_consultables:["cod_prov","nom_prov","cod_depto","nom_depto","cod_bahra","nombre_bahra","long_gd","lat_gd",],
+			ver_consultables_as:["COD_PROV","PROVINCIA","COD_DEPTO","DEPARTAMENTO","COD_BAHRA","NOMBRE","X","Y"],			
+			estilo:"cuadrado_amarillo",	
+			filtro:"tipo_bahra = 'ST'",
+			activo:false,
+			grupo:tipo});
+
+var ARGENMAPwms = new OpenLayers.Layer.TMS(
+    "Argenmap", // name for display in LayerSwitcher
+    "http://wms.ign.gob.ar/geoserver/gwc/service/tms/", // service endpoint
+    {layername: "capabaseargenmap", type: "png"} // required properties
+);
+
+/*
+var ARGENMAPwms = new OpenLayers.Layer.WMS( "Argenmap",
+                                      "http://wms.ign.gob.ar/geoserver/wms", 
+                                      {
+                                      	layers: 'capabaseargenmap',
+                                      	format: 'image/png',
+                                      	tiled: true,
+                                      	sphericalMercator: true
+                                      }
+);
+
+var ARGENMAPwms = new OpenLayers.Layer.TMS( "Argenmap",
+                                      "http://wms.ign.gob.ar/geoserver/gwc/service/tms/",
+	                                      		{
+	                                      			layername: "capabaseargenmap",
+	                                      			type: "png",
+	                                      			tileOrigin: new OpenLayers.LonLat(-180, -90)
+	                                      		}
+                                      		);
+*/
+
+App.map.addLayer(ARGENMAPwms);
+//App.map.setBaseLayer(ARGENMAPwms);
+
+App.map.addLayer(App.vector);
+App.map.zoomToMaxExtent();
+App.cue= "";
+zoomInicial();
+
+//// Si se cargo la API de google.maps > Cargar las Capas De Google
+if ((typeof google != 'undefined')){
+ // cargarCapasGoogle();
+
+var gsat = new OpenLayers.Layer.Google(
+    "Google Satelital",
+    {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 25}
+    // used to be {type: G_SATELLITE_MAP, numZoomLevels: 22}
+);
+
+App.map.addLayer(gsat);
+agregarCapaArgenmapTransparenteAGoogleSatellite();
+}
+
+App.map.setBaseLayer(ARGENMAPwms);
+
+cargarViewport();
+});
+
+function agregarCapaArgenmapTransparenteAGoogleSatellite() {
+  var argenmapTransparente = new OpenLayers.Layer.TMS(
+    "Argenmap", // name for display in LayerSwitcher
+    "http://wms.ign.gob.ar/geoserver/gwc/service/tms/", // service endpoint
+    {layername: "capabaseargenmap", type: "png"}, {
+      isBaseLayer:false,
+      visibility:false,
+      displayInLayerSwitcher:false
+  });
+
+ /*
+ function agregarCapaArgenmapTransparenteAGoogleSatellite() {
+  var argenmapTransparente = new OpenLayers.Layer.WMS(
+    "Topónimos IGN",
+    "http://wms.ign.gob.ar/geoserver/wms?", {
+      layers:"capabasesigign",
+      format:"image/png",
+      transparent:true
+    }, {
+      isBaseLayer:false,
+      visibility:false,
+      displayInLayerSwitcher:false
+  });
+ */
+
+  App.map.addLayer(argenmapTransparente);
+
+  //Cuando se cambia la capa base
+  // chequeo si estamos en la satellite de Google
+  // y si es la satellite, superpongo la capa WMS "capabasesigign" desde
+  // el WMS del IGN
+  App.map.events.register("changebaselayer", App.map, function(event) {
+    if (event.layer.type === "satellite") {
+      argenmapTransparente.setVisibility(true);
+    } else {
+      argenmapTransparente.setVisibility(false);
+    }
+    
+  });
+  
+}
+
+
+</script>
+</html>
